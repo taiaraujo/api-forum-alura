@@ -9,9 +9,9 @@ import br.com.alura.forum.repository.CourseRepository;
 import br.com.alura.forum.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -41,9 +41,7 @@ public class TopicsController {
 
     @GetMapping
     public Page<TopicDto> findList(@RequestParam(required = false) String nameCourse,
-                                   @RequestParam int page, @RequestParam int qtd, @RequestParam String sort) {
-
-        Pageable pageable = PageRequest.of(page, qtd, Sort.Direction.ASC, sort);
+                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable) {
 
         if (nameCourse == null) {
             Page<Topic> topics = topicRepository.findAll(pageable);
