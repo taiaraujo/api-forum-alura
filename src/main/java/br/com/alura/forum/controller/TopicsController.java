@@ -8,6 +8,8 @@ import br.com.alura.forum.models.Topic;
 import br.com.alura.forum.repository.CourseRepository;
 import br.com.alura.forum.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,6 +42,7 @@ public class TopicsController {
     }
 
     @GetMapping
+    @Cacheable(value = "topicsList")
     public Page<TopicDto> findList(@RequestParam(required = false) String nameCourse,
                                    @PageableDefault(sort = "id", direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable) {
 
@@ -52,6 +55,7 @@ public class TopicsController {
     }
 
     @PostMapping
+    @CacheEvict(value = "topicsList", allEntries = true)
     public ResponseEntity<TopicDto> create(@RequestBody @Valid TopicForm topicForm, UriComponentsBuilder uriBuilder) {
         Topic topic = topicForm.convert(courseRepository);
         topicRepository.save(topic);
@@ -61,6 +65,7 @@ public class TopicsController {
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = "topicsList", allEntries = true)
     public ResponseEntity<TopicDto> update(@PathVariable Long id, @RequestBody @Valid TopicUpdateForm topicForm) {
         Optional<Topic> optional = topicRepository.findById(id);
 
@@ -73,6 +78,7 @@ public class TopicsController {
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(value = "topicsList", allEntries = true)
     public ResponseEntity<?> delete(@PathVariable Long id){
         Optional<Topic> optional = topicRepository.findById(id);
 
