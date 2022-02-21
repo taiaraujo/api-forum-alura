@@ -47,7 +47,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/topics").permitAll()
                 .antMatchers(HttpMethod.GET,"/topics/*").permitAll()
                 .antMatchers(HttpMethod.POST,"/auth").permitAll()
-//                .antMatchers(HttpMethod.GET,"/**").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/topics/*").hasRole("MODERATOR")
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
